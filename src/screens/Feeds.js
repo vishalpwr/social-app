@@ -1,53 +1,19 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useEffect } from 'react'
+import { Animated, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Colors from '../constants/Colors'
-import {Surface} from 'react-native-pa'
-
-const data = [
-  {
-    image: 'https://firebasestorage.googleapis.com/v0/b/notifyme-79a2f.appspot.com/o/illus_img2.jpg?alt=media&token=e8bd66c2-99bf-4c86-aa68-a23db085ead6',
-    avatar: 'https://st2.depositphotos.com/3310833/7828/v/380/depositphotos_78289624-stock-illustration-flat-hipster-character.jpg',
-    title: 'Harry Callum',
-    caption: 'Lorem ipsum xyz desctiption',
-  },
-  {
-    image: 'https://firebasestorage.googleapis.com/v0/b/notifyme-79a2f.appspot.com/o/illus_img3.jpeg?alt=media&token=c8913562-88f7-4c57-ac42-085308ca73da',
-    avatar: 'https://img2.pngio.com/rebecca-borland-commonvision-she-png-600_600.png',
-    title: 'Evelyn Kyle',
-    caption: 'Lorem ipsum xyz desctiption',
-  },
-  {
-    image: 'https://firebasestorage.googleapis.com/v0/b/notifyme-79a2f.appspot.com/o/illus_img6.jpeg?alt=media&token=1922b3fa-1000-4322-8cd9-f1eeb1f4f2e9',
-    avatar: 'https://image.freepik.com/free-vector/vector-avatar-smiling-man-facial-expression_102172-203.jpg',
-    title: 'Thomas Joe',
-    caption: 'Lorem ipsum xyz desctiption',
-  },
-  {
-    image: 'https://firebasestorage.googleapis.com/v0/b/notifyme-79a2f.appspot.com/o/illus_img4.jpg?alt=media&token=7fa378ee-245c-46c1-b251-14eb4ed77ae2',
-    avatar: 'https://www.kindpng.com/picc/m/164-1649662_woman-icon-circle-png-transparent-png.png',
-    title: 'Charlotte Rhys',
-    caption: 'Lorem ipsum xyz desctiption',
-  },
-  {
-    image: 'https://firebasestorage.googleapis.com/v0/b/notifyme-79a2f.appspot.com/o/illus_img5.jpeg?alt=media&token=e9c608df-8f2a-45cc-9ccc-593eea781249',
-    avatar: 'https://images.vexels.com/media/users/3/145908/raw/52eabf633ca6414e60a7677b0b917d92-male-avatar-maker.jpg',
-    title: 'George Reece',
-    caption: 'Lorem ipsum xyz desctiption',
-  },
-  {
-    image: 'https://firebasestorage.googleapis.com/v0/b/notifyme-79a2f.appspot.com/o/illus_img1.jpg?alt=media&token=f7f2876f-c9e9-49bd-a389-73568d2e3c17',
-    avatar: 'https://esquimaltmfrc.com/wp-content/uploads/2015/09/flat-faces-icons-circle-woman-9.png',
-    title: 'Emma Damian',
-    caption: 'Lorem ipsum xyz desctiption',
-  },
-]
+import { Surface } from 'react-native-paper'
+import Icons, { icons } from '../components/Icons'
+import MyHeader from '../components/MyHeader'
+import { useRef } from 'react'
+import { useState } from 'react'
+import { data } from '../constants/row'
 
 const tabIcons = [
-  {ico1: 'user', ico2: 'user-o'},
-  {ico1: "chatbox-ellipses", ico2: 'chatbox-ellipses-outline'},
-  {ico1: "plus",},
-  {ico1: 'like1',ico2: 'like2',},
-  {ico1: "home", ico2: "home-outline"}
+  { ico1: "home", ico2: "home-outline", type: icons.Ionicons },
+  { ico1: 'like1', ico2: 'like2', type: icons.AntDesign },
+  { ico1: "plus", ico2: "plus", type: icons.Entypo },
+  { ico1: "chatbox-ellipses", ico2: 'chatbox-ellipses-outline', type: icons.Ionicons },
+  { ico1: 'user', ico2: 'user-o', type: icons.FontAwesome },
 ]
 
 const RenderItem = ({ item }) => {
@@ -59,8 +25,7 @@ const RenderItem = ({ item }) => {
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.caption}>{item.caption}</Text>
         </View>
-        <View style={{ position: 'absolute',
-        top: 16, right: 0 }}>
+        <View style={{ position: 'absolute', top: 16, right: 0 }}>
           <Icons icon={icons.Entypo} name="dots-three-vertical" size={18} />
         </View>
       </View>
@@ -80,10 +45,113 @@ const RenderItem = ({ item }) => {
   )
 }
 
-const Feeds = () => {
+const CONTAINER_HEIGHT = 50;
+const Feeds = ({ route }) => {
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const offsetAnim = useRef(new Animated.Value(0)).current;
+  const [focused, setFocused] = useState('home');
+  const clampedScroll = Animated.diffClamp(
+    Animated.add(
+      scrollY.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+        extrapolateLeft: 'clamp',
+      }),
+      offsetAnim,
+    ),
+    0,
+    CONTAINER_HEIGHT
+  )
+  var _clampedScrollValue = 0;
+  var _offsetValue = 0;
+  var _scrollValue = 0;
+  useEffect(() => {
+    scrollY.addListener(({ value }) => {
+      const diff = value - _scrollValue;
+      _scrollValue = value;
+      _clampedScrollValue = Math.min(
+        Math.max(_clampedScrollValue + diff, 0),
+        CONTAINER_HEIGHT,
+      )
+    });
+    offsetAnim.addListener(({ value }) => {
+      _offsetValue = value;
+    })
+  }, []);
+
+  var scrollEndTimer = null;
+  const onMomentumScrollBegin = () => {
+    clearTimeout(scrollEndTimer)
+  }
+  const onMomentumScrollEnd = () => {
+    const toValue = _scrollValue > CONTAINER_HEIGHT &&
+      _clampedScrollValue > (CONTAINER_HEIGHT) / 2
+      ? _offsetValue + CONTAINER_HEIGHT : _offsetValue - CONTAINER_HEIGHT;
+
+    Animated.timing(offsetAnim, {
+      toValue,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }
+  const onScrollEndDrag = () => {
+    scrollEndTimer = setTimeout(onMomentumScrollEnd, 250);
+  }
+
+  const headerTranslate = clampedScroll.interpolate({
+    inputRange: [0, CONTAINER_HEIGHT],
+    outputRange: [0, -CONTAINER_HEIGHT],
+    extrapolate: 'clamp',
+  })
+  const opacity = clampedScroll.interpolate({
+    inputRange: [0, CONTAINER_HEIGHT - 20, CONTAINER_HEIGHT],
+    outputRange: [1, 0.05, 0],
+    extrapolate: 'clamp',
+  })
+  const bottomTabTranslate = clampedScroll.interpolate({
+    inputRange: [0, CONTAINER_HEIGHT],
+    outputRange: [0, CONTAINER_HEIGHT * 2],
+    extrapolate: 'clamp',
+  })
+
   return (
     <View style={styles.container}>
-      <Text></Text>
+      <Animated.FlatList
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        data={data}
+        keyExtractor={(item, index) => item.title + index.toString()}
+        renderItem={RenderItem}
+        contentContainerStyle={styles.contantContainerStyle}
+        onMomentumScrollBegin={onMomentumScrollBegin}
+        onMomentumScrollEnd={onMomentumScrollEnd}
+        onScrollEndDrag={onScrollEndDrag}
+        scrollEventThrottle={1}
+      />
+      <Animated.View style={[styles.view, { top: 0, transform: [{ translateY: headerTranslate }] }]}>
+        <MyHeader
+          menu
+          title={route.name}
+          right="search"
+          style={[styles.header, {opacity}]}
+        />
+      </Animated.View>
+      <Animated.View style={[styles.view, { bottom: 0, transform: [{ translateY: bottomTabTranslate }] }]}>
+        <Surface style={[styles.rowContainer, styles.bottomBar]}>
+          {tabIcons.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[index === 2 && styles.plusIconStyle]}>
+              <Icons icon={item.type} name={focused === item.ico1 ? item.ico1 : item.ico2}
+                color={index === 2 && Colors.white}
+                size={index === 2 && 34}
+              />
+            </TouchableOpacity>
+          ))}
+        </Surface>
+      </Animated.View>
     </View>
   )
 }
@@ -94,9 +162,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {},
+  view: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: CONTAINER_HEIGHT,
+  },
+  header: {
+    borderBottomRightRadius: 16,
+    borderBottomLeftRadius: 16,
+    marginHorizontal: 4,
+  },
+  bottomBar: {
+    borderTopRightRadius: 16,
+    borderTopLeftRadius: 16,
+    marginHorizontal: 4,
+  },
+  contantContainerStyle: {
+    paddingTop: CONTAINER_HEIGHT,
+    marginTop: 8,
+  },
+  rowContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
   item: {
-    margin: 10,
+    marginHorizontal: 10,
+    marginBottom: 12,
     elevation: 6,
     borderRadius: 16,
   },
@@ -141,5 +235,20 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginHorizontal: 10,
+  },
+  plusIconStyle: {
+    bottom: 24,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'black',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.6,
+    elevation: 8,
+    borderWidth: 4,
+    borderColor: Colors.white,
   },
 })
