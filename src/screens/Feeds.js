@@ -6,7 +6,8 @@ import Icons, { icons } from '../components/Icons'
 import MyHeader from '../components/MyHeader'
 import { useRef } from 'react'
 import { useState } from 'react'
-import { data } from '../constants/row'
+import { data } from '../constants/raw'
+import { SharedElement } from 'react-navigation-shared-element'
 
 const tabIcons = [
   { ico1: "home", ico2: "home-outline", type: icons.Ionicons },
@@ -16,11 +17,13 @@ const tabIcons = [
   { ico1: 'user', ico2: 'user-o', type: icons.FontAwesome },
 ]
 
-const RenderItem = ({ item }) => {
+const RenderItem = ({ item, navigation }) => {
   return (
     <Surface style={styles.item}>
       <View style={styles.content}>
-        <Image style={styles.avatar} source={{ uri: item.avatar }} resizeMode="cover" />
+        <SharedElement id={`item.${item.avatar}.avatar`}>
+          <Image style={styles.avatar} source={{ uri: item.avatar }} resizeMode="cover" />
+        </SharedElement>
         <View style={styles.textContainer}>
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.caption}>{item.caption}</Text>
@@ -29,7 +32,11 @@ const RenderItem = ({ item }) => {
           <Icons icon={icons.Entypo} name="dots-three-vertical" size={18} />
         </View>
       </View>
-      <Image style={styles.image} source={{ uri: item.image }} resizeMode="cover" />
+      <TouchableOpacity onPress={() => navigation.navigate('Detail', { item })}>
+        <SharedElement id={`item.${item.image}.image`}>
+          <Image style={styles.image} source={{ uri: item.image }} resizeMode="cover" />
+        </SharedElement>
+      </TouchableOpacity>
       <View style={styles.bottomView}>
         <View style={styles.icon}>
           <Icons icon={icons.AntDesign} name="heart" color={Colors.primary} />
@@ -46,7 +53,7 @@ const RenderItem = ({ item }) => {
 }
 
 const CONTAINER_HEIGHT = 50;
-const Feeds = ({ route }) => {
+const Feeds = ({ route, navigation }) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const offsetAnim = useRef(new Animated.Value(0)).current;
   const [focused, setFocused] = useState('home');
@@ -123,8 +130,8 @@ const Feeds = ({ route }) => {
         )}
         data={data}
         keyExtractor={(item, index) => item.title + index.toString()}
-        renderItem={RenderItem}
-        contentContainerStyle={styles.contantContainerStyle}
+        renderItem={({ item }) => <RenderItem item={item} navigation={navigation} />}
+        contentContainerStyle={styles.contentContainerStyle}
         onMomentumScrollBegin={onMomentumScrollBegin}
         onMomentumScrollEnd={onMomentumScrollEnd}
         onScrollEndDrag={onScrollEndDrag}
@@ -135,7 +142,7 @@ const Feeds = ({ route }) => {
           menu
           title={route.name}
           right="search"
-          style={[styles.header, {opacity}]}
+          style={[styles.header, { opacity }]}
         />
       </Animated.View>
       <Animated.View style={[styles.view, { bottom: 0, transform: [{ translateY: bottomTabTranslate }] }]}>
@@ -178,7 +185,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     marginHorizontal: 4,
   },
-  contantContainerStyle: {
+  contentContainerStyle: {
     paddingTop: CONTAINER_HEIGHT,
     marginTop: 8,
   },

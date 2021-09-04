@@ -6,14 +6,14 @@ import Colors from '../constants/Colors';
 
 const IconSize = 24;
 
-const AppHeader = ({ style, menu, back, title, right, onRightPress, optionalBtn, optionalBtnPress, rightComponent, headerBg="white", iconColor='black', titleAlight, optionalBadge }) => {
+const AppHeader = ({ style, menu, back, onPressBack, title, right, onRightPress, optionalBtn, optionalBtnPress, rightComponent, headerBg="white", iconColor='black', titleAlight, optionalBadge }) => {
 
 	const LeftView = () => (
 		<View style={styles.view}>
 			{menu && <TouchableOpacity onPress={() => { }}>
 				<Feather name="menu" size={IconSize} color={iconColor} />
 			</TouchableOpacity>}
-			{back && <TouchableOpacity onPress={() => { }}>
+			{back && <TouchableOpacity onPress={onPressBack}>
 				<Feather name="arrow-left" size={IconSize} color={iconColor} />
 			</TouchableOpacity>}
 		</View>
