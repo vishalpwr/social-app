@@ -8,6 +8,7 @@ import { useRef } from 'react'
 import { useState } from 'react'
 import { data } from '../constants/raw'
 import { SharedElement } from 'react-navigation-shared-element'
+import BottomTab from '../components/BottomTab'
 
 const tabIcons = [
   { ico1: "home", ico2: "home-outline", type: icons.Ionicons },
@@ -147,16 +148,7 @@ const Feeds = ({ route, navigation }) => {
       </Animated.View>
       <Animated.View style={[styles.view, { bottom: 0, transform: [{ translateY: bottomTabTranslate }] }]}>
         <Surface style={[styles.rowContainer, styles.bottomBar]}>
-          {tabIcons.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[index === 2 && styles.plusIconStyle]}>
-              <Icons icon={item.type} name={focused === item.ico1 ? item.ico1 : item.ico2}
-                color={index === 2 && Colors.white}
-                size={index === 2 && 34}
-              />
-            </TouchableOpacity>
-          ))}
+          <BottomTab navigation={navigation} />
         </Surface>
       </Animated.View>
     </View>
@@ -242,20 +234,5 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginHorizontal: 10,
-  },
-  plusIconStyle: {
-    bottom: 24,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: Colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: 'black',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.6,
-    elevation: 8,
-    borderWidth: 4,
-    borderColor: Colors.white,
   },
 })
