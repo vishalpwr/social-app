@@ -9,15 +9,12 @@ import LoginScreen from './src/screens/LoginScreen';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './store';
 import Profile from './src/screens/Profile';
-import { Init } from './store/actions';
 import { ActivityIndicator } from 'react-native-paper';
 import Colors from './src/constants/Colors';
-
-// const Stack = createStackNavigator();
+import { Init } from './store/actions';
 const Stack = createSharedElementStackNavigator()
 
 const options = {
-  headerShown: false,
   gestureEnabled: true,
   transitionSpec: {
     open: { animation: 'timing', config: { duration: 300 } },
@@ -26,7 +23,7 @@ const options = {
   cardStyleInterpolator: ({ current: { progress } }) => {
     return {
       cardStyle: {
-        opacity: progress
+        opacity: progress,
       }
     }
   }
@@ -37,20 +34,7 @@ const MyStack = () => {
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="Feeds" component={Feeds} />
       <Stack.Screen name="Detail" component={DetailPage}
-        options={{
-          gestureEnabled: true,
-          transitionSpec: {
-            open: { animation: 'timing', config: { duration: 300 } },
-            close: { animation: 'timing', config: { duration: 300 } },
-          },
-          cardStyleInterpolator: ({ current: { progress } }) => {
-            return {
-              cardStyle: {
-                opacity: progress,
-              }
-            }
-          }
-        }}
+        options={options}
       />
       <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
@@ -59,7 +43,7 @@ const MyStack = () => {
 
 const AuthStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator headerMode="none">
       <Stack.Screen name="Login" component={LoginScreen} />
     </Stack.Navigator>
   )
@@ -72,11 +56,12 @@ const RootNavigation = () => {
 
   const dispatch = useDispatch();
   const init = async () => {
-    await dispatch(Init())
-    setLoading(false)
+    await dispatch(Init());
+    setLoading(false);
   }
+
   useEffect(() => {
-    init();
+    init()
   }, [])
 
   if (loading) {
@@ -86,6 +71,7 @@ const RootNavigation = () => {
       </View>
     )
   }
+  
   return (
     <NavigationContainer>
       <StatusBar backgroundColor='black' barStyle="light-content" />

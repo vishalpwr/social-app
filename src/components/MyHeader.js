@@ -32,11 +32,11 @@ const AppHeader = ({ style, menu, back, onPressBack, title, right, onRightPress,
 	)
 	const TitleView = () => (
 		<View style={styles.titleView}>
-			<Title style={{ color: iconColor, textAlign: titleAlight }}>{title}</Title>
+			<Title style={{ textAlign: titleAlight }}>{title}</Title>
 		</View>
 	)
 	return (
-		<Surface style={[styles.header, style, { backgroundColor: headerBg }]}>
+		<Surface style={[styles.header, style]}>
 			<LeftView />
 			<TitleView />
 			<RightView />

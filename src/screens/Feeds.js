@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { Animated, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Colors from '../constants/Colors'
-import { Surface } from 'react-native-paper'
+import { Surface, Text } from 'react-native-paper'
 import Icons, { icons } from '../components/Icons'
 import MyHeader from '../components/MyHeader'
 import { useRef } from 'react'
@@ -9,14 +9,6 @@ import { useState } from 'react'
 import { data } from '../constants/raw'
 import { SharedElement } from 'react-navigation-shared-element'
 import BottomTab from '../components/BottomTab'
-
-const tabIcons = [
-  { ico1: "home", ico2: "home-outline", type: icons.Ionicons },
-  { ico1: 'like1', ico2: 'like2', type: icons.AntDesign },
-  { ico1: "plus", ico2: "plus", type: icons.Entypo },
-  { ico1: "chatbox-ellipses", ico2: 'chatbox-ellipses-outline', type: icons.Ionicons },
-  { ico1: 'user', ico2: 'user-o', type: icons.FontAwesome },
-]
 
 const RenderItem = ({ item, navigation }) => {
   return (
