@@ -10,3 +10,5 @@ clone then repo and then go into root dir of the app and run
 * Implemented React Navigation shared element on feeds screen
 * Header and bottom tab hide animation on list scroll 
 
+playlist link:
+https://bit.ly/3bpihBQ
