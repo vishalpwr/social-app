@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Button } from 'react-native-paper'
 import { useDispatch } from 'react-redux';
-import { Logout } from '../../store/actions';
+import { Logout } from '../store/actions';
 import MyHeader from '../components/MyHeader'
 
 export default function Profile({ route, navigation }) {

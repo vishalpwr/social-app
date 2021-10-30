@@ -7,11 +7,11 @@ import DetailPage from './src/screens/DetailPage';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import LoginScreen from './src/screens/LoginScreen';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { store } from './store';
+import { store } from './src/store';
 import Profile from './src/screens/Profile';
 import { ActivityIndicator } from 'react-native-paper';
 import Colors from './src/constants/Colors';
-import { Init } from './store/actions';
+import { Init } from './src/store/actions';
 const Stack = createSharedElementStackNavigator()
 
 const options = {
@@ -43,7 +43,7 @@ const MyStack = () => {
 
 const AuthStack = () => {
   return (
-    <Stack.Navigator headerMode="screen">
+    <Stack.Navigator headerMode="none">
       <Stack.Screen name="Login" component={LoginScreen} />
     </Stack.Navigator>
   )

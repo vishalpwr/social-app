@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { Button, Surface, TextInput, Title, Text } from 'react-native-paper'
 import { useDispatch } from 'react-redux';
-import { Login } from '../../store/actions';
+import { Login } from '../store/actions';
 import Colors from '../constants/Colors';
 import { loginBg } from '../constants/raw';
 
