@@ -5,12 +5,9 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch(action.type) {
-    case 'INIT':
-      return {
-        authToken: action.payload,
-      }
     case 'LOGIN':
       return {
+        ...state, //copy all previous states
         authToken: action.payload,
       }
     case 'LOGOUT':

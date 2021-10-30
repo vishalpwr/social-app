@@ -25,7 +25,9 @@ const RenderItem = ({ item, navigation }) => {
           <Icons icon={icons.Entypo} name="dots-three-vertical" size={18} />
         </View>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('Detail', { item })}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => navigation.navigate('Detail', { item })}>
         <SharedElement id={`item.${item.image}.image`}>
           <Image style={styles.image} source={{ uri: item.image }} resizeMode="cover" />
         </SharedElement>

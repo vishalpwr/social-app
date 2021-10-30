@@ -43,7 +43,7 @@ const MyStack = () => {
 
 const AuthStack = () => {
   return (
-    <Stack.Navigator headerMode="none">
+    <Stack.Navigator headerMode="screen">
       <Stack.Screen name="Login" component={LoginScreen} />
     </Stack.Navigator>
   )
