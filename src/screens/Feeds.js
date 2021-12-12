@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { data } from '../constants/raw'
 import { SharedElement } from 'react-navigation-shared-element'
 import BottomTab from '../components/BottomTab'
+import Pinchable from 'react-native-pinchable';
 
 const RenderItem = ({ item, navigation }) => {
   return (
@@ -29,7 +30,9 @@ const RenderItem = ({ item, navigation }) => {
         activeOpacity={0.8}
         onPress={() => navigation.navigate('Detail', { item })}>
         <SharedElement id={`item.${item.image}.image`}>
-          <Image style={styles.image} source={{ uri: item.image }} resizeMode="cover" />
+          <Pinchable>
+            <Image style={styles.image} source={{ uri: item.image }} resizeMode="cover" />
+          </Pinchable>
         </SharedElement>
       </TouchableOpacity>
       <View style={styles.bottomView}>
